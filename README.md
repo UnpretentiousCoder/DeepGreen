@@ -60,4 +60,4 @@ DeepGreen stands out with several distinct features that enhance its reliability
 
 For a more in-depth understanding of DeepGreen's architecture, implementation details, and advanced configurations, please refer to our comprehensive project documentation:
 
-* **[DeepGreen Project Documentation (PDF)](./docs/Project_documentation.pdf)**
+* **[DeepGreen Project Documentation (PDF)](./docs/Project_documentation.docx.pdf)**
