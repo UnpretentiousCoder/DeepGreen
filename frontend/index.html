@@ -1,0 +1,350 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepGreen - Albizia Capital AI Financial Analyst</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Icons&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="status-messages-container"></div>
+    <div id="loadingSpinner" class="spinner"></div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                <h1>DeepGreen</h1>
+                <div class="subtitle">Albizia Capital AI Financial Analyst</div>
+            </div>
+
+            <nav class="nav-menu">
+                <a class="nav-item active" data-page="chat-page">Chat</a>
+                <a class="nav-item" data-page="upload-page">Upload & Ingest</a>
+                <a class="nav-item" data-page="sentiment-page">Sentiment</a>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div id="chat-page" class="page active">
+                <div class="header">
+                    <h2>Query Your Documents</h2>
+                    <p>Ask me anything about management discussions, ESG reporting and broker analysis on your
+                        companies.</p>
+                </div>
+
+                <div id="chat-container" class="chat-container">
+                    <div class="welcome-message">
+                        Welcome to Albizia Capital AI Financial Analysis - DeepGreen. Upload your documents into our
+                        internal database and ask me anything about these documents.
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <div class="input-container">
+                        <input type="text" id="message-input" class="message-input" placeholder="Ask anything">
+                        <button id="send-button" class="send-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="upload-page" class="page">
+                <div class="header">
+                    <h2>Upload and Ingest Documents</h2>
+                    <p>Upload your PDF documents and ingest them into our searchable database for AI-powered analysis.
+                    </p>
+                </div>
+
+                <div class="upload-container">
+                    <div class="upload-grid">
+                        <div class="upload-section">
+                            <h3>1. Upload PDF</h3>
+                            <div class="upload-area" id="uploadArea">
+                                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3-3m0 0l3 3m-3-3v6"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <p class="upload-text">Drag & drop your PDFs here or click to browse</p>
+                                <p class="file-status" id="fileStatus">No file chosen</p>
+                                <input type="file" id="fileInput" accept=".pdf" multiple />
+                            </div>
+                            <button class="action-button" id="upload-button" disabled>Upload File</button>
+                        </div>
+
+                        <div class="upload-section">
+                            <h3>2. Ingest Documents</h3>
+                            <div class="ingest-content">
+                                <div class="light-bulb">💡</div>
+                                <p class="ingestion-info">This processes <span id="ingestFileNameDisplay">all uploaded
+                                        PDFs</span> into the searchable database.</p>
+                            </div>
+                            <button class="action-button" id="ingest-button">Start Ingestion</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sentiment-page" class="page">
+                <div class="header">
+                    <h2>Sector Sentiment Analysis</h2>
+                    <p>Quarterly sentiment changes across GICS sectors based on earnings call transcripts.</p>
+                </div>
+
+                <div class="sentiment-container">
+                    <div class="period-selector">
+                        <label for="period-select" class="period-label">Comparing:</label>
+                        <select id="period-select" class="period-select">
+                            <!-- JS will populate options here -->
+                        </select>
+                        <button class="refresh-button" id="refresh-sentiment">
+                            <span class="material-icons">refresh</span>
+                        </button>
+                    </div>
+
+
+                    <div class="sectors-grid" id="sectors-grid">
+                        <!-- Energy Sector -->
+                        <div class="sector-card" data-sector="Energy">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M11.3 2.6L6 12h5v8l5.3-9.4H11V2.6M13 4.4V12h3.1L13 17.6V12H8.9L13 4.4z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Energy</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Materials Sector -->
+                        <div class="sector-card" data-sector="Materials">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3a1 1 0 0 0-1-1H8v-2h2a1 1 0 0 0 1-1V7h2a2 2 0 0 0 2-2v-.41c2.93 1.18 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39M11 19.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.22.21-1.79L9 15v1a2 2 0 0 0 2 2m1-16A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Materials</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Industrials Sector -->
+                        <div class="sector-card" data-sector="Industrials">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M10 2v8H7l-2 2v8h6v-6h2v6h6v-8l-2-2h-3V2h-4M9 4h2v7H9V4m-4 8h3v2H5v-2m11 0h3v2h-3v-2z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Industrials</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consumer Discretionary -->
+                        <div class="sector-card" data-sector="Consumer Discretionary">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Consumer Discretionary</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consumer Staples -->
+                        <div class="sector-card" data-sector="Consumer Staples">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Consumer Staples</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Care -->
+                        <div class="sector-card" data-sector="Healthcare">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M19 8h-2v3h-3v2h3v3h2v-3h3v-2h-3V8m-5 2V7a5 5 0 0 0-5-5 4.87 4.87 0 0 0-3.5 1.5A4.87 4.87 0 0 0 2 7a5 5 0 0 0 5 5h3v2H6.73a2 2 0 0 0-1.73 1 2 2 0 0 0 0 2l.03.06L9 22h1.78L15 16.9l-.04-.05a2 2 0 0 0 0-2 2 2 0 0 0-1.74-1H10v-2h3a1 1 0 0 0 1-1m-9.5-5.5A1.5 1.5 0 0 1 6 3a1.5 1.5 0 0 1 1.5 1.5A1.5 1.5 0 0 1 6 6a1.5 1.5 0 0 1-1.5-1.5z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Health Care</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Financials -->
+                        <div class="sector-card" data-sector="Financials">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M5 6h2v12H5V6m4 0h2v12H9V6m4 0h2v12h-2V6m4 0h2v12h-2V6m-7-4L3 8v1h18V8l-7-6h-4m2 2h2l2 2H8l2-2m-8 18v2h20v-2H2z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Financials</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Information Technology -->
+                        <div class="sector-card" data-sector="Technology">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M4 6h16v10H4m16 2a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4c-1.11 0-2 .89-2 2v10a2 2 0 0 0 2 2H0v2h24v-2M6.5 10l2.25 3L11 10l2.25 3L15.5 10l-2.25 3L11 16l-2.25-3L6.5 10z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Information Technology</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Communication Services -->
+                        <div class="sector-card" data-sector="Communication Services">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Communication Services</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Utilities -->
+                        <div class="sector-card" data-sector="Utilities">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 2c1.1 0 2 .9 2 2v6c0 1.1-.9 2-2 2s-2-.9-2-2V4c0-1.1.9-2 2-2m6.39 7.11L16.5 7.22c-.78-.78-2.05-.78-2.83 0l-2.12 2.12c-.78.78-.78 2.05 0 2.83l1.89 1.89c.78.78 2.05.78 2.83 0l2.12-2.12c.78-.78.78-2.05 0-2.83M5.5 7.22L3.61 9.11c-.78.78-.78 2.05 0 2.83l2.12 2.12c.78.78 2.05.78 2.83 0l1.89-1.89c.78-.78.78-2.05 0-2.83L8.33 7.22c-.78-.78-2.05-.78-2.83 0M12 14c1.1 0 2 .9 2 2v6c0 1.1-.9 2-2 2s-2-.9-2-2v-6c0-1.1.9-2 2-2z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Utilities</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Real Estate -->
+                        <div class="sector-card" data-sector="Real Estate">
+                            <div class="sector-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z" />
+                                </svg>
+                            </div>
+                            <h3 class="sector-name">Real Estate</h3>
+                            <div class="sentiment-score loading">
+                                <div class="score-value">--</div>
+                                <div class="score-change">
+                                    <span class="change-arrow">-</span>
+                                    <span class="change-value">--%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div id="refresh-modal" class="modal-overlay">
+       <div class="modal-dialog">
+         <header class="modal-header">
+           <h2>Refresh Options</h2>
+         </header>
+         <div class="modal-body">
+           <p>What would you like to do?</p>
+           <ul class="modal-list">
+             <li>Refresh Now checks for new transcripts to be added in (Helps with "N/A" or cards with 0 transcripts loaded, you might want to refresh again when data is available.)</li>
+             <li>Analyze Latest Quarter if current period is outdated</li>
+           </ul>
+         </div>
+         <footer class="modal-footer">
+           <button id="refresh-current" class="btn btn-primary" data-action="refresh">
+             Refresh Now
+           </button>
+           <button id="start-latest" class="btn btn-secondary" data-action="analyze">
+             Analyze Latest Quarter
+           </button>
+           <button id="cancel-refresh" class="btn btn-text cancel" data-action="cancel">
+             Cancel
+           </button>
+         </footer>
+       </div>
+     </div>
+
+    <script src="script.js" defer></script>
+</body>
+
+</html>
